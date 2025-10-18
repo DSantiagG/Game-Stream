@@ -16,9 +16,7 @@ struct Home: View {
             
             TabView (selection: $selectedTab){
                 
-                Text("Perfil")
-                    .font(.system(size: 30, weight: .bold))
-                .tabItem {
+                ProfileView().tabItem {
                     Image(systemName: "person")
                     Text("Perfil")
                 }
@@ -37,9 +35,7 @@ struct Home: View {
                     }
                     .tag(2)
                 
-                Text("Favoritos")
-                    .font(.system(size: 30, weight: .bold))
-                    .tabItem {
+                FavoritesView().tabItem {
                         Image(systemName: "heart")
                         Text("Favoritos")
                     }
@@ -59,7 +55,6 @@ struct Home: View {
 
 struct HomeTabView: View {
     
-    @State var textoBusqueda = ""
     var body: some View{
         ZStack {
             
@@ -69,26 +64,8 @@ struct HomeTabView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 250)
-                //.padding(.bottom, 40)
+                    .padding(.bottom, 20)
                     .padding(.horizontal, 11)
-                
-                HStack{
-                    Button {
-                        buscar()
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundStyle(textoBusqueda.isEmpty ? .yellow : Color("Dark-Cian"))
-                    }
-                    
-                    TextField(text: $textoBusqueda) {
-                        Text("Buscar un video")
-                            .foregroundStyle(Color(red: 174/255, green: 177/255, blue: 185/255))
-                    }
-                    .foregroundStyle(.white)
-                }
-                .padding([.top, .leading, .bottom], 11.0)
-                .background(Color("Blue-Gray"))
-                .clipShape(Capsule())
                 
                 ScrollView{
                     SubModuleHome()
@@ -100,19 +77,61 @@ struct HomeTabView: View {
         }
     
     }
-    func buscar() {
-        print("El usuario esta buscando \(textoBusqueda)")
-    }
 }
 
 struct SubModuleHome: View {
     
-    @State var url = "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4"
-    @State var isPlayerActive = false
-    let urlVideos: [String] = ["https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4", "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4", "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4", "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4", "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4", "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4", "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4"]
+    @State var isGameInfoEmpy = false
+    
+    @State var textoBusqueda = ""
+    
+    @ObservedObject var juegoEncontrado = SearchGameViewModel()
+    @State var isGameViewActive = false
+    
+    @State var url: String = ""
+    @State var titulo: String = ""
+    @State var studio: String = ""
+    @State var calificacion: String = ""
+    @State var anoPublicacion: String = ""
+    @State var descripcion: String = ""
+    @State var tags: [String] = [""]
+    @State var imgsUrl: [String] = [""]
+    
+    var device = UIDevice.current.model
     
     var body: some View{
         VStack{
+            
+            HStack{
+                Button (action: {
+                    watchGame(name: textoBusqueda)
+                    
+                    
+                } ,label: {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundStyle(textoBusqueda.isEmpty ? .yellow : Color("Dark-Cian"))
+                })
+                .alert(
+                    "Error",
+                    isPresented: $isGameInfoEmpy,
+                    actions: {
+                        Button("Entendido", role: .cancel) { }
+                    },
+                    message: {
+                        Text("No se encontro el juego")
+                    }
+                )
+                
+                TextField(text: $textoBusqueda) {
+                    Text("Buscar un video")
+                        .foregroundStyle(Color(red: 174/255, green: 177/255, blue: 185/255))
+                }
+                .foregroundStyle(.white)
+            }
+            .padding([.top, .leading, .bottom], 11.0)
+            .background(Color("Blue-Gray"))
+            .clipShape(Capsule())
+            
             Text("LOS MÁS POPULARES")
                 .font(.title3)
                 .foregroundStyle(.white)
@@ -123,9 +142,7 @@ struct SubModuleHome: View {
             ZStack{
                 
                 Button {
-                    url = urlVideos[0]
-                    print("URL: \(url)")
-                    isPlayerActive = true
+                    watchGame(name: "The Witcher 3")
                 } label: {
                     VStack (spacing: 0){
                         Image("The Witcher 3")
@@ -156,47 +173,95 @@ struct SubModuleHome: View {
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
             
             ScrollView (.horizontal, showsIndicators: false){
-                HStack{
-                    
-                    Button {
-                        print("FPS")
-                    } label: {
-                        ZStack{
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(Color("Blue-Gray"))
-                                .frame(width: 160, height: 90)
-                            Image("FPS")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 42, height: 42)
+                
+                if(device == "iPad"){
+                    HStack{
+                        
+                        Button {
+                            print("FPS")
+                        } label: {
+                            ZStack{
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color("Blue-Gray"))
+                                    .frame(width: 320, height: 180)
+                                Image("FPS")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 84, height: 84)
+                            }
+                        }
+                        
+                        Button {
+                            print("RPG")
+                        } label: {
+                            ZStack{
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color("Blue-Gray"))
+                                    .frame(width: 320, height: 180)
+                                Image("RPG")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 84, height: 84)
+                            }
+                        }
+                        
+                        Button {
+                            print("OpenWorld")
+                        } label: {
+                            ZStack{
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color("Blue-Gray"))
+                                    .frame(width: 320, height: 180)
+                                Image("OpenWorld")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 100, height: 100)
+                            }
                         }
                     }
-                    
-                    Button {
-                        print("RPG")
-                    } label: {
-                        ZStack{
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(Color("Blue-Gray"))
-                                .frame(width: 160, height: 90)
-                            Image("RPG")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 42, height: 42)
+                }else{
+                    HStack{
+                        
+                        Button {
+                            print("FPS")
+                        } label: {
+                            ZStack{
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color("Blue-Gray"))
+                                    .frame(width: 160, height: 90)
+                                Image("FPS")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 42, height: 42)
+                            }
                         }
-                    }
-                    
-                    Button {
-                        print("OpenWorld")
-                    } label: {
-                        ZStack{
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(Color("Blue-Gray"))
-                                .frame(width: 160, height: 90)
-                            Image("OpenWorld")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 42, height: 42)
+                        
+                        Button {
+                            print("RPG")
+                        } label: {
+                            ZStack{
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color("Blue-Gray"))
+                                    .frame(width: 160, height: 90)
+                                Image("RPG")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 42, height: 42)
+                            }
+                        }
+                        
+                        Button {
+                            print("OpenWorld")
+                        } label: {
+                            ZStack{
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color("Blue-Gray"))
+                                    .frame(width: 160, height: 90)
+                                Image("OpenWorld")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 42, height: 42)
+                            }
                         }
                     }
                 }
@@ -212,9 +277,7 @@ struct SubModuleHome: View {
                 HStack{
                     
                     Button {
-                        url = urlVideos[1]
-                        print("URL: \(url)")
-                        isPlayerActive = true
+                        watchGame(name: "Abzu")
                     } label: {
                         Image("Abzu")
                             .resizable()
@@ -223,9 +286,7 @@ struct SubModuleHome: View {
                     }
                     
                     Button {
-                        url = urlVideos[2]
-                        print("URL: \(url)")
-                        isPlayerActive = true
+                        watchGame(name: "Crash Bandicoot")
                     } label: {
                         Image("Crash Bandicoot")
                             .resizable()
@@ -234,9 +295,7 @@ struct SubModuleHome: View {
                     }
                     
                     Button {
-                        url = urlVideos[3]
-                        print("URL: \(url)")
-                        isPlayerActive = true
+                        watchGame(name: "DEATH STRANDING")
                     } label: {
                         Image("DEATH STRANDING")
                             .resizable()
@@ -256,33 +315,27 @@ struct SubModuleHome: View {
                 HStack{
                     
                     Button {
-                        url = urlVideos[1]
-                        print("URL: \(url)")
-                        isPlayerActive = true
+                        watchGame(name: "Cuphead")
                     } label: {
-                        Image("Abzu")
+                        Image("Cuphead")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 240, height: 135)
                     }
                     
                     Button {
-                        url = urlVideos[2]
-                        print("URL: \(url)")
-                        isPlayerActive = true
+                        watchGame(name: "Hades")
                     } label: {
-                        Image("Crash Bandicoot")
+                        Image("Hades")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 240, height: 135)
                     }
                     
                     Button {
-                        url = urlVideos[3]
-                        print("URL: \(url)")
-                        isPlayerActive = true
+                        watchGame(name: "Grand Theft Auto")
                     } label: {
-                        Image("DEATH STRANDING")
+                        Image("Grand Theft Auto")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 240, height: 135)
@@ -291,11 +344,33 @@ struct SubModuleHome: View {
             }
             
         }
-        .navigationDestination(isPresented: $isPlayerActive) {
-            VideoPlayer(player: AVPlayer(url: URL(string: url)!))
-                .frame(width: 400, height: 300)
+        .navigationDestination(isPresented: $isGameViewActive) {
+            GameView(url: url, titulo: titulo, studio: studio, calificacion: calificacion, anoPublicacion: anoPublicacion, descripcion: descripcion, tags: tags, imgsUrl: imgsUrl)
         }
     }
+    
+    func watchGame(name: String) {
+        juegoEncontrado.search(gameName: name)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3){
+            print("Cantidad E: \(juegoEncontrado.gameInfo.count)")
+            if juegoEncontrado.gameInfo.count == 0 {
+                isGameInfoEmpy = true
+            }else{
+                url = juegoEncontrado.gameInfo[0].videosUrls.mobile
+                titulo = juegoEncontrado.gameInfo[0].title
+                studio = juegoEncontrado.gameInfo[0].studio
+                calificacion = juegoEncontrado.gameInfo[0].contentRaiting
+                anoPublicacion = juegoEncontrado.gameInfo[0].publicationYear
+                descripcion = juegoEncontrado.gameInfo[0].description
+                tags = juegoEncontrado.gameInfo[0].tags
+                imgsUrl = juegoEncontrado.gameInfo[0].galleryImages
+                
+                isGameViewActive = true
+            }
+        }
+    }
+    
 }
 
 #Preview {

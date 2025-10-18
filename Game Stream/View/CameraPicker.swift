@@ -1,3 +1,11 @@
+//
+//  CameraPicker.swift
+//  Game Stream
+//
+//  Created by David Giron on 14/10/25.
+//
+
+
 import SwiftUI
 import UIKit
 

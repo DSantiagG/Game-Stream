@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4AF04F132E999D770066F715 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 4AF04F122E999D770066F715 /* Kingfisher */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		4AD7638E2E96C05000CE347D /* Game Stream.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Game Stream.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4AF04F132E999D770066F715 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = "Game Stream";
 			packageProductDependencies = (
+				4AF04F122E999D770066F715 /* Kingfisher */,
 			);
 			productName = "Game Stream";
 			productReference = 4AD7638E2E96C05000CE347D /* Game Stream.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 4AD763852E96C05000CE347D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				4AF04F112E999D770066F715 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4AD7638F2E96C05000CE347D /* Products */;
 			projectDirPath = "";
@@ -256,6 +265,8 @@
 				DEVELOPMENT_TEAM = TKBVW3HJVK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need to take photos to add to our app";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need to access your photos to add them to out app";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -288,6 +299,8 @@
 				DEVELOPMENT_TEAM = TKBVW3HJVK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need to take photos to add to our app";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need to access your photos to add them to out app";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -332,6 +345,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4AF04F112E999D770066F715 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4AF04F122E999D770066F715 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4AF04F112E999D770066F715 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4AD763862E96C05000CE347D /* Project object */;
 }

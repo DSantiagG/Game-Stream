@@ -10,25 +10,18 @@ import AVKit
 
 struct GameView: View {
     
-    var url: String
-    var titulo: String
-    var studio: String
-    var calificacion: String
-    var anoPublicacion: String
-    var descripcion: String
-    var tags: [String]
-    var imgsUrl: [String]
+    var game: Game
     
     var body: some View {
         ZStack{
-            Color("Marine").ignoresSafeArea()
+            Color.appPrimaryBackground.ignoresSafeArea()
             VStack{
-                Video(url: url)
+                Video(url: game.videosUrls.mobile)
                     .frame(height: 300)
                 ScrollView{
-                    VideoInfo(titulo: titulo, studio: studio, calificacion: calificacion, anoPublicacion: anoPublicacion, descripcion: descripcion, tags: tags)
+                    VideoInfo(titulo: game.title, studio: game.studio, calificacion: game.contentRaiting, anoPublicacion: game.publicationYear, descripcion: game.description, tags: game.tags)
                         .padding(.bottom, 16)
-                    Gallery(imgsUrl: imgsUrl)
+                    Gallery(imgsUrl: game.galleryImages)
                         .padding(.bottom, 16)
                     Comments()
                 }
@@ -206,11 +199,11 @@ struct Comment: View {
         .padding()
         .background {
             RoundedRectangle(cornerRadius: 14)
-                .fill(Color("Blue-Gray"))
+                .fill(Color.appPrimaryButton)
         }
     }
 }
 
 #Preview {
-    GameView(url: "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4", titulo: "Sonic", studio: "Sega", calificacion: "E+", anoPublicacion: "1991", descripcion: "Mi juego", tags: ["Plataformas", "Aventura", "Acción"], imgsUrl: ["https://cdn.cloudflare.steamstatic.com/steam/apps/292030/ss_107600c1337accc09104f7a8aa7f275f23cad096.600x338.jpg", "https://cdn.cloudflare.steamstatic.com/steam/apps/292030/ss_107600c1337accc09104f7a8aa7f275f23cad096.600x338.jpg", "https://cn.cloudflare.steamstatic.com/steam/apps/292030/ss_107600c1337accc09104f7a8aa7f275f23cad096.600x338.jpg"])
+    GameView(game: Game(title: "Sonic", studio: "Sega", contentRaiting: "E+", publicationYear: "1991", description: "Mi juego", platforms: ["Xbox", "Play"], tags: ["Plataformas", "Aventura", "Acción"], videosUrls: VideoURL(mobile: "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4", tablet: "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4"), galleryImages: ["https://cdn.cloudflare.steamstatic.com/steam/apps/292030/ss_107600c1337accc09104f7a8aa7f275f23cad096.600x338.jpg", "https://cdn.cloudflare.steamstatic.com/steam/apps/292030/ss_107600c1337accc09104f7a8aa7f275f23cad096.600x338.jpg", "https://cn.cloudflare.steamstatic.com/steam/apps/292030/ss_107600c1337accc09104f7a8aa7f275f23cad096.600x338.jpg"]))
 }

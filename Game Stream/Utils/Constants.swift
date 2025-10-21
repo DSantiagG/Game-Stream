@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+/*
+ struct Constants {
+     static let baseURL = "https://api.tuapp.com"
+     static let timeoutInterval: Double = 30
+ }
+ */

@@ -10,22 +10,17 @@ import PhotosUI
 
 struct EditProfileView: View {
     
-    @State private var showingOptions = false
-    @State private var showingCamera = false
-    @State private var showingGallery = false
-    @State private var selectedItem: PhotosPickerItem?
-    @State private var profileImage: Image? = Image("perfilEjemplo")
     @State private var profileUIImage: UIImage?
+    
+    @State private var profileImage: Image? = Images.Placeholder.profileDefault
     
     var body: some View {
         ZStack{
-            Color("Marine")
+            Color.appPrimaryBackground
                 .ignoresSafeArea()
             ScrollView{
                 VStack{
-                    Button {
-                        showingOptions = true
-                    } label: {
+                    ImagePicker (image: $profileUIImage, title: "Cambiar foto de perfil"){
                         ZStack{
                             profileImage!
                                 .resizable()
@@ -40,31 +35,10 @@ struct EditProfileView: View {
                     }
                 }
                 .padding(.bottom, 18)
-                .confirmationDialog("Cambiar foto de perfil", isPresented: $showingOptions, titleVisibility: .visible) {
-                    Button("Tomar foto") {
-                        showingCamera = true
-                    }
-                    Button("Elegir de la galería") {
-                        showingGallery = true
-                    }
-                    Button("Cancelar", role: .cancel) {}
-                }
-                .photosPicker(isPresented: $showingGallery, selection: $selectedItem, matching: .images)
-                .fullScreenCover(isPresented: $showingCamera) {
-                    CameraPicker { uiImage in
-                        profileUIImage = uiImage
-                        profileImage = Image(uiImage: uiImage)
-                        saveProfileImage(uiImage)
-                    }
-                    .ignoresSafeArea()
-                }
-                .onChange(of: selectedItem) { _, newItem in
-                    Task {
-                        guard let data = try? await newItem?.loadTransferable(type: Data.self),
-                              let uiImage = UIImage(data: data) else { return }
-                        profileUIImage = uiImage
-                        profileImage = Image(uiImage: uiImage)
-                        saveProfileImage(uiImage)
+                .onChange(of: profileUIImage) { _, newValue in
+                    if let profileUIImage{
+                        profileImage = Image(uiImage: profileUIImage)
+                        saveProfileImage(profileUIImage)
                     }
                 }
                 EditSection()
@@ -109,7 +83,7 @@ struct EditSection: View {
     var body: some View{
         VStack (alignment: .leading){
             Text("Correo electrónico")
-                .foregroundStyle(Color("Dark-Cian"))
+                .foregroundStyle(Color.appSecondaryBackground)
 
             TextField(text: $correo) {
                 Text(verbatim: "ejemplo@gmail.com")
@@ -119,7 +93,7 @@ struct EditSection: View {
             
             Divider()
                 .frame(height: 1)
-                .background(Color("Dark-Cian"))
+                .background(Color.appSecondaryBackground)
                 .padding(.bottom)
             
             Text("Contraseña")
@@ -159,7 +133,7 @@ struct EditSection: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, 10)
                     .overlay(RoundedRectangle(cornerRadius: 6.0)
-                        .stroke(Color("Dark-Cian"), lineWidth: 1.0)
+                        .stroke(Color.appSecondaryBackground, lineWidth: 1.0)
                         .shadow(color: .white, radius: 6))
             }
             

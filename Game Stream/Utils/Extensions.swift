@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+/*
+ extension String {
+     var isEmailValid: Bool {
+         self.contains("@") && self.contains(".")
+     }
+ }
+ */

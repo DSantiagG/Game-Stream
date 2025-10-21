@@ -10,7 +10,7 @@ import Kingfisher
 
 struct GamesView: View {
     
-    @ObservedObject var games = GamesViewModel()
+    @ObservedObject var games: GamesViewModel
     @State var gameViewIsActive: Bool = false
     @State var url: String = ""
     @State var titulo: String = ""
@@ -26,11 +26,10 @@ struct GamesView: View {
         GridItem(.flexible())
     ]
     
-    
     var body: some View {
         
         ZStack{
-            Color("Marine").ignoresSafeArea()
+            Color.appPrimaryBackground.ignoresSafeArea()
             
             VStack{
                 Text("Juegos")
@@ -54,64 +53,11 @@ struct GamesView: View {
                                 
                                 gameViewIsActive = true
                             } label: {
-                                /*
-                                 //Con dependencia
-                                 KFImage(URL(string: game.galleryImages[0]))
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .clipShape(RoundedRectangle.init(cornerRadius: 4))
-                                    .padding(.bottom, 12)
-                                 */
-                                
                                 // Usa la primera imagen de la galería, o la que corresponda
-                                if let firstURLString = game.galleryImages.first,
-                                   let url = URL(string: firstURLString) {
-
-                                    AsyncImage(url: url) { phase in
-                                        switch phase {
-                                        case .empty:
-                                            // Placeholder mientras carga
-                                            ZStack {
-                                                Color.gray.opacity(0.2)
-                                                ProgressView()
-                                            }
-                                            .frame(height: 160)
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
-
-                                        case .success(let image):
-                                            image
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .clipShape(RoundedRectangle.init(cornerRadius: 4))
-                                                .padding(.bottom, 12)
-
-                                        case .failure:
-                                            // Imagen de error o fallback
-                                            ZStack {
-                                                Color.gray.opacity(0.2)
-                                                Image(systemName: "photo")
-                                                    .font(.largeTitle)
-                                                    .foregroundStyle(.white.opacity(0.8))
-                                            }
-                                            .frame(height: 160)
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
-
-                                        @unknown default:
-                                            EmptyView()
-                                        }
-                                    }
-
-                                } else {
-                                    // Si no hay URL válida
-                                    ZStack {
-                                        Color.gray.opacity(0.2)
-                                        Image(systemName: "photo")
-                                            .font(.largeTitle)
-                                            .foregroundStyle(.white.opacity(0.8))
-                                    }
-                                    .frame(height: 160)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                                }
+                                URLImage(urlString: game.galleryImages.first, cornerRadius: 4)
+                                    .frame(height: 107)
+                                    .scaledToFill()
+                                    .padding(.bottom, 2)
                             }
                         }
                     }
@@ -120,7 +66,7 @@ struct GamesView: View {
             }
             .padding(.horizontal, 6)
             .navigationDestination(isPresented: $gameViewIsActive) {
-                GameView(url: url, titulo: titulo, studio: studio, calificacion: calificacion, anoPublicacion: anoPublicacion, descripcion: descripcion, tags: tags, imgsUrl: imgsUrl)
+                /*GameView(url: url, titulo: titulo, studio: studio, calificacion: calificacion, anoPublicacion: anoPublicacion, descripcion: descripcion, tags: tags, imgsUrl: imgsUrl)*/
             }
         }
         .onAppear(
@@ -137,5 +83,5 @@ struct GamesView: View {
 }
 
 #Preview {
-    GamesView()
+    GamesView(games: GamesViewModel())
 }

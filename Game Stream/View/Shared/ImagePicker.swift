@@ -1,47 +1,28 @@
 import SwiftUI
 import PhotosUI
 
-public struct ProfileImagePicker: View {
+struct ImagePicker<Label: View>: View {
+    
     @Binding private var image: UIImage?
-    private var placeholder: Image
+    private let label: Label
     private var title: String
-    private var size: CGFloat
 
     @State private var showingOptions = false
     @State private var showingCamera = false
     @State private var showingGallery = false
     @State private var selectedItem: PhotosPickerItem?
 
-    public init(image: Binding<UIImage?>, placeholder: Image, title: String = "Cambiar foto de perfil", size: CGFloat = 118) {
+    public init(image: Binding<UIImage?>, title: String = "Seleccionar imagen", @ViewBuilder label: () -> Label) {
         self._image = image
-        self.placeholder = placeholder
         self.title = title
-        self.size = size
+        self.label = label()
     }
 
     public var body: some View {
         Button {
             showingOptions = true
         } label: {
-            ZStack {
-                Group {
-                    if let uiImage = image {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } else {
-                        placeholder
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    }
-                }
-                .frame(width: size, height: size)
-                .clipShape(Circle())
-
-                Image(systemName: "camera")
-                    .font(.system(size: 24))
-                    .foregroundStyle(.white)
-            }
+            label
         }
         .confirmationDialog(title, isPresented: $showingOptions, titleVisibility: .visible) {
             Button("Tomar foto") { showingCamera = true }
@@ -67,11 +48,25 @@ public struct ProfileImagePicker: View {
 
 #Preview {
     struct PreviewHost: View {
-        @State private var img: UIImage?
+        @State var profileImage: UIImage?
+        
         var body: some View {
-            ZStack {
-                Color.black.ignoresSafeArea()
-                ProfileImagePicker(image: $img, placeholder: Image("perfilEjemplo"))
+            MainLayout{
+                ImagePicker(image: $profileImage){
+                    ZStack{
+                        (profileImage != nil
+                            ? Image(uiImage: profileImage!)
+                            : Images.Placeholder.profileDefault)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 118, height: 118)
+                            .clipShape(Circle())
+                        
+                        Image(systemName: "camera")
+                            .font(.system(size: 24))
+                            .foregroundStyle(.white)
+                    }
+                }
             }
         }
     }

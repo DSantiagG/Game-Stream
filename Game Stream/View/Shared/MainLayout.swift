@@ -7,12 +7,27 @@
 
 import SwiftUI
 
-struct MainLayout: View {
+struct MainLayout<Content: View>: View {
+    let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Color.appPrimaryBackground.ignoresSafeArea()
+            VStack {
+                content
+            }
+            .padding(.horizontal)
+        }
     }
 }
 
 #Preview {
-    MainLayout()
+    MainLayout{
+        LoginView()
+            .environmentObject(AuthViewModel())
+    }
 }

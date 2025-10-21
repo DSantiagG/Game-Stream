@@ -13,7 +13,7 @@ struct FavoritesView: View {
     
     var body: some View {
         ZStack{
-            Color("Marine")
+            Color.appPrimaryBackground
                 .ignoresSafeArea()
             VStack{
                 Text("FAVORITOS")
@@ -34,7 +34,7 @@ struct FavoritesView: View {
                                 .foregroundStyle(.white)
                                 .padding(10)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color("Blue-Gray"))
+                                .background(Color.appPrimaryButton)
                                 .clipShape(RoundedRectangle(cornerRadius: 3.0))
                                 .padding(.bottom)
                         }

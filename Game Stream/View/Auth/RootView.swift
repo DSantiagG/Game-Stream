@@ -8,11 +8,24 @@
 import SwiftUI
 
 struct RootView: View {
+    
+    @EnvironmentObject var auth: AuthViewModel
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
+            ZStack {
+                if auth.isLoggedIn {
+                    AppTabsView()
+                        .transition(.move(edge: .trailing))
+                } else {
+                    AuthTabsView()
+                        .transition(.move(edge: .leading))
+                }
+            }
+            .animation(.easeInOut, value: auth.isLoggedIn)
+        }
 }
 
 #Preview {
     RootView()
+        .environmentObject(AuthViewModel())
 }

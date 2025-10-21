@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct Game_StreamApp: App {
+    @StateObject var authViewModel = AuthViewModel()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
+                .environmentObject(authViewModel)
         }
     }
 }

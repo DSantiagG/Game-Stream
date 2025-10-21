@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 
-class ViewModel: ObservableObject {
+class GamesViewModel: ObservableObject {
     
     //Se publica
     @Published var gamesInfo = [Game] ()

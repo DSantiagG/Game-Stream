@@ -7,12 +7,24 @@
 
 import SwiftUI
 
-struct SocialButton: View {
+struct SecondaryButton: View {
+    
+    var title: String
+    var action: () -> Void
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Button(title, action: action)
+            .font(.subheadline)
+            .fontWeight(.bold)
+            .foregroundStyle(.white)
+            .frame(width: 150, height: 40)
+            .background(Color.appPrimaryButton)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 
 #Preview {
-    SocialButton()
+    MainLayout{
+        SecondaryButton(title: "Facebook"){}
+    }
 }

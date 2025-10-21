@@ -8,11 +8,47 @@
 import SwiftUI
 
 struct CustomTextField: View {
+    
+    var label: String
+    var placeHolder: String
+    @Binding var text: String
+    var isSecure: Bool = false
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        
+        let placeholder = Text(verbatim: placeHolder)
+            .font(.caption)
+            .foregroundColor(.gray)
+        
+        VStack(alignment: .leading){
+            Text(label)
+                .foregroundStyle(isSecure ? .white : Color.appSecondaryBackground)
+            
+            if isSecure {
+                SecureField(text: $text) {placeholder}
+                    .foregroundStyle(.white)
+            }else{
+                TextField(text: $text) {placeholder}
+                    .foregroundStyle(.white)
+            }
+            
+            Divider()
+                .frame(height: 1)
+                .background(isSecure ? .white : Color.appSecondaryBackground)
+        }
     }
+    
 }
 
 #Preview {
-    CustomTextField()
+    struct Preview: View{
+        @State var text: String = ""
+        var body: some View{
+            MainLayout{
+                CustomTextField(label: "Correo electrónico", placeHolder: "ejemplo@gmail.com", text: $text)
+                CustomTextField(label: "Contraseña", placeHolder: "Escribe tu contraseña", text: $text, isSecure: true)
+            }
+        }
+    }
+    return Preview()
 }

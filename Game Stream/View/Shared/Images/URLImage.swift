@@ -62,9 +62,8 @@ struct URLImage: View {
 }
 
 #Preview {
-    VStack {
+    MainLayout {
         URLImage(urlString: "https://cdn.cloudflare.steamstatic.com/steam/apps/292030/header.jpg")
         //URLImage(urlString: nil)
     }
-    .padding()
 }

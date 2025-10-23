@@ -24,25 +24,24 @@ class SearchGameViewModel: ObservableObject {
         
         request.httpMethod = "GET"
         
-        URLSession.shared.dataTask(with: request) { (data, response, error) in
-            
-            do {
-                if let jsonData = data {
-                    print("Tamaño del Json: \(jsonData.count) bytes")
-                    
-                    let decodeData = try
-                    
-                    JSONDecoder().decode(GameSearch.self, from: jsonData)
-                
-                    //En un hilo aparte
-                    DispatchQueue.main.async {
-                        self.gamesFound.append(contentsOf: decodeData.results)
-                    }
-                }
-            } catch {
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
                 print("Error: \(error)")
+                return
+            }
+            guard let jsonData = data else {
+                print("Error: No data returned")
+                return
             }
             
+            DispatchQueue.main.async {
+                do {
+                    let decodeData = try JSONDecoder().decode(GameSearch.self, from: jsonData)
+                    self.gamesFound.append(contentsOf: decodeData.results)
+                } catch {
+                    print("Error decoding: \(error)")
+                }
+            }
         }.resume()
     }
 }

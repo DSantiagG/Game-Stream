@@ -34,7 +34,7 @@ struct RegisterView: View {
                     )
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: 85, height: 85)
+                        .frame(width: 90, height: 90)
                         .overlay {
                             Image(systemName: "camera")
                                 .foregroundStyle(.white)
@@ -68,7 +68,7 @@ struct RegisterView: View {
                 Text ("Inicia sesión con redes sociales")
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.top, 40)
+                    .padding(.top, 20)
                     .padding(.bottom)
                 
                 HStack (alignment: .center){

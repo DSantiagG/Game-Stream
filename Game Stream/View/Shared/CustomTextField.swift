@@ -22,6 +22,7 @@ struct CustomTextField: View {
         
         VStack(alignment: .leading){
             Text(label)
+                .bold()
                 .foregroundStyle(isSecure ? .white : Color.appSecondaryBackground)
             
             if isSecure {

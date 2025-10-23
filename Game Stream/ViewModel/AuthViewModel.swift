@@ -47,13 +47,17 @@ class AuthViewModel: ObservableObject {
             profileImage = ImageManager.loadImage(named: imageName)
         }
         
+        resetFields()
         print("Inicio de sesión correcto.")
     }
     
     func logout() {
+        
+        resetFields()
+        
         isLoggedIn = false
-        currentUser = nil
         profileImage = nil
+        currentUser = nil
         UserDefaults.standard.removeObject(forKey: currentUserKey)
     }
     
@@ -85,8 +89,6 @@ class AuthViewModel: ObservableObject {
             return
         }
         
-        
-        
         let userID = UUID()
         let imageName = "user_\(userID).jpg"
         
@@ -103,7 +105,71 @@ class AuthViewModel: ObservableObject {
         isLoggedIn = true
         UserDefaults.standard.set(newUser.email, forKey: currentUserKey)
         
+        resetFields()
         print("Usuario registrado correctamente.")
+    }
+    
+    func update() -> Bool {
+        guard var user = currentUser else {
+            loginError = "No hay usuario activo."
+            return false
+        }
+
+        var users = getAllUsers()
+        
+        let trimmedName = userName.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedName.isEmpty {
+            user.username = trimmedName
+        }
+    
+        if !password.isEmpty || !confirmPassword.isEmpty {
+            guard password == confirmPassword else {
+                loginError = "Las contraseñas no coinciden."
+                return false
+            }
+            user.password = password
+        }
+        
+        if let image = profileImage {
+            if let existingImageName = user.imageName {
+                ImageManager.saveImage(image, withName: existingImageName)
+            } else {
+                let newImageName = "user_\(user.id).jpg"
+                ImageManager.saveImage(image, withName: newImageName)
+                user.imageName = newImageName
+            }
+        }
+        
+        if let index = users.firstIndex(where: { $0.id == user.id }) {
+            users[index] = user
+            saveUsers(users)
+        }
+        
+        currentUser = user
+        if let imageName = user.imageName {
+            profileImage = ImageManager.loadImage(named: imageName)
+        }
+        
+        resetFields()
+        loginError = nil
+        print("Usuario actualizado correctamente.")
+        
+        return true
+    }
+    
+    func getUserProfileImage () -> Image? {
+        if let imageName = currentUser?.imageName, let image = ImageManager.loadImage(named: imageName){
+            return Image(uiImage: image)
+        }
+        return nil
+    }
+
+    private func resetFields () {
+        email = ""
+        password = ""
+        confirmPassword = ""
+        userName = ""
+        loginError = nil
     }
     
     //Auxiliary Funcs
@@ -146,7 +212,7 @@ class AuthViewModel: ObservableObject {
         let defaultUser = User(
             id: UUID(),
             username: "admin",
-            email: "admin@example.com",
+            email: "Admin",
             password: "admin",
             imageName: nil
         )

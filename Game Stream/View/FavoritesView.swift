@@ -9,43 +9,49 @@ import SwiftUI
 import AVKit
 
 struct FavoritesView: View {
-    @ObservedObject var todosLosVideoJuegos = GamesViewModel()
+    
+    @ObservedObject var gamesVM: GamesViewModel
     
     var body: some View {
-        ZStack{
-            Color.appPrimaryBackground
-                .ignoresSafeArea()
-            VStack{
-                Text("FAVORITOS")
-                    .font(.title2.bold())
-                    .foregroundStyle(.white)
-                    .padding(.bottom, 9.0)
-                ScrollView{
-                    ForEach(todosLosVideoJuegos.gamesInfo, id: \.self){
-                        game in
-                        
-                        VStack(alignment: .leading, spacing: 0){
-                            
-                            VideoPlayer(player: AVPlayer(url: URL(string: game.videosUrls.mobile)!))
-                                .frame(height: 210)
-                            
-                            Text(game.title)
-                                .font(.headline.bold())
-                                .foregroundStyle(.white)
-                                .padding(10)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color.appPrimaryButton)
-                                .clipShape(RoundedRectangle(cornerRadius: 3.0))
-                                .padding(.bottom)
-                        }
-                    }
+        
+        MainLayout{
+       
+            Text("Tus Favoritos")
+                .font(.system(size: 32, weight: .bold))
+                .foregroundStyle(.white)
+                .padding(EdgeInsets(top: 16, leading: 0, bottom: 40, trailing: 0))
+            
+            ScrollView{
+                ForEach(gamesVM.gamesInfo, id: \.self){ game in
+                    VideoGameView(urlVideo: game.videosUrls.tablet, title: game.title)
+                    .padding(.bottom)
                 }
             }
-            .padding()
         }
     }
 }
 
+struct VideoGameView: View{
+    
+    @State var urlVideo: String
+    @State var title: String
+    
+    var body: some View{
+        VStack(alignment: .leading, spacing: 0){
+            
+            CustomVideoPlayer(url: urlVideo)
+            
+            Text(title)
+                .font(.headline.bold())
+                .foregroundStyle(.white)
+                .padding(10)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.appPrimaryButton)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
 #Preview {
-    FavoritesView()
+    FavoritesView(gamesVM: GamesViewModel())
 }

@@ -22,6 +22,7 @@ struct PrimaryButton: View {
             RoundedRectangle(cornerRadius: 6)
                 .stroke(Color.appSecondaryBackground, lineWidth: 1)
             .shadow(color: .white, radius: 6))
+        .padding(.horizontal)
     }
 }
 

@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import AVKit
 
 struct GameView: View {
     
@@ -14,62 +13,82 @@ struct GameView: View {
     
     var body: some View {
         ZStack{
-            Color.appPrimaryBackground.ignoresSafeArea()
-            VStack{
-                Video(url: game.videosUrls.mobile)
-                    .frame(height: 300)
-                ScrollView{
-                    VideoInfo(titulo: game.title, studio: game.studio, calificacion: game.contentRaiting, anoPublicacion: game.publicationYear, descripcion: game.description, tags: game.tags)
-                        .padding(.bottom, 16)
-                    Gallery(imgsUrl: game.galleryImages)
-                        .padding(.bottom, 16)
-                    Comments()
+            Color.appPrimaryBackground
+                .ignoresSafeArea()
+            
+            ScrollView (showsIndicators: false){
+                GeometryReader { geo in
+                    CustomVideoPlayer(
+                        url: game.videosUrls.mobile,
+                        posterURL: game.galleryImages[2],
+                        playInOverlay: true
+                    )
+                    .frame(width: geo.size.width, height: 470)
                 }
-                .frame(maxWidth: .infinity)
+                .frame(height: 400)
+                
+                MainLayout{
+                    VStack(spacing: 16) {
+                        GameInfo(game: game)
+                        Gallery(imgsUrl: game.galleryImages)
+                        Comments()
+                            .padding(.bottom, 30)
+                    }.padding(.top)
+                }
             }
+            .ignoresSafeArea()
+            
+            
         }
     }
 }
 
-struct Video: View{
-    var url: String
-    var body: some View{
-        VideoPlayer(player: AVPlayer(url: URL(string: url)!)).ignoresSafeArea()
-    }
-}
-
-struct VideoInfo: View {
-    var titulo: String
-    var studio: String
-    var calificacion: String
-    var anoPublicacion: String
-    var descripcion: String
-    var tags: [String]
-
+struct GameInfo: View {
+    
+    var game: Game
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(titulo)
-                .font(.largeTitle)
-                .fontWeight(.bold)
+            Text(game.title)
+                .font(.largeTitle.bold())
                 .foregroundStyle(.white)
-
+            
             HStack(spacing: 16) {
-                Text(studio)
+                Text(game.studio)
                     .bold()
-                Text(calificacion)
-                Text(anoPublicacion)
+                Text(game.contentRaiting)
+                Text(game.publicationYear)
             }
             .font(.subheadline)
             .foregroundStyle(.gray)
-
-            Text(descripcion)
+            
+            if !game.platforms.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(game.platforms, id: \.self) { tag in
+                            VStack (spacing: 1){
+                                Text("\(tag)")
+                                    .font(.caption)
+                                    .padding(.vertical, 3)
+                                    .padding(.horizontal, 3)
+                                    .foregroundStyle(.white)
+                                Divider()
+                                    .frame(height: 1)
+                                    .background(Color.appSecondaryBackground)
+                            }
+                        }
+                    }
+                }
+            }
+            
+            Text(game.description)
                 .font(.body)
                 .foregroundStyle(.white)
-
-            if !tags.isEmpty {
+            
+            if !game.tags.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
-                        ForEach(tags, id: \.self) { tag in
+                        ForEach(game.tags, id: \.self) { tag in
                             Text("#\(tag)")
                                 .font(.caption)
                                 .padding(.vertical, 6)
@@ -83,105 +102,63 @@ struct VideoInfo: View {
                     }
                 }
             }
-            
         }
-        .padding(.horizontal)
     }
 }
 
 struct Gallery: View{
+    
     var imgsUrl: [String]
-    let formaGrid = [GridItem(.flexible())]
+    let gridForm = [GridItem(.flexible())]
+    
     var body: some View{
-        VStack (alignment: .leading, spacing: 15){
+        VStack (alignment: .leading, spacing: 12){
             Text("GALERÍA")
-                .foregroundStyle(.white)
                 .font(.title2.bold())
+                .foregroundStyle(.white)
+            
             ScrollView(.horizontal, showsIndicators: false){
-                LazyHGrid(rows: formaGrid, spacing: 8){
+                LazyHGrid(rows: gridForm, spacing: 8){
                     ForEach(imgsUrl, id: \.self) { url in
-                        if let url = URL(string: url) {
-                            AsyncImage(url: url) { phase in
-                                switch phase {
-                                case .empty:
-                                    ZStack {
-                                        Color.gray.opacity(0.2)
-                                        ProgressView()
-                                    }
-                                    .frame(width: 280)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
-
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .clipShape(RoundedRectangle.init(cornerRadius: 4))
-
-                                case .failure:
-                                    ZStack {
-                                        Color.gray.opacity(0.2)
-                                        Image(systemName: "photo")
-                                            .font(.largeTitle)
-                                            .foregroundStyle(.white.opacity(0.8))
-                                    }
-                                    .frame(width: 280)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
-
-                                @unknown default:
-                                    EmptyView()
-                                }
-                            }
-
-                        } else {
-                            ZStack {
-                                Color.gray.opacity(0.2)
-                                Image(systemName: "photo")
-                                    .font(.largeTitle)
-                                    .foregroundStyle(.white.opacity(0.8))
-                            }
-                            .frame(width: 280)
+                        URLImage(urlString: url, cornerRadius: 4, contentMode: .fill)
+                            .frame(width: 320)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
-                        }
                     }
                 }
             }
             .frame(height: 180)
         }
-        .padding(.horizontal)
     }
 }
 
 struct Comments: View {
     var body: some View{
-        VStack (alignment: .leading, spacing: 15){
+        VStack (alignment: .leading, spacing: 12){
             Text("COMENTARIOS")
                 .foregroundStyle(.white)
                 .font(.title2.bold())
             
             ScrollView(showsIndicators: false){
-                
-                    Comment(name: "Geoff Atto", img: "profile-picture", date: "Hace 7 días", text: "He visto que como media tiene una gran calificación, y estoy completamente de acuerdo. Es el mejor juego que he jugado sin ninguna duda, combina una buena trama con una buenísima experiencia de juego libre gracias a su inmenso mapa y actividades.")
-                    
-                    Comment(name: "Alvy Baack", img: "profile-picture-2", date: "Hace 12 días", text: "He visto que como media tiene una gran calificación, y estoy completamente de acuerdo. Es el mejor juego que he jugado sin ninguna duda, combina una buena trama con una buenísima experiencia de juego libre gracias a su inmenso mapa y actividades.")
-                    
-                    Comment(name: "Geoff Atto", img: "profile-picture", date: "Hace 7 días", text: "He visto que como media tiene una gran calificación, y estoy completamente de acuerdo. Es el mejor juego que he jugado sin ninguna duda, combina una buena trama con una buenísima experiencia de juego libre gracias a su inmenso mapa y actividades.")
-    
+                ForEach(0..<3) { _ in
+                    Comment( name: "Geoff Atto", image: Images.Placeholder.userPlaceholder1, date: "Hace 7 días", text: "He visto que como media tiene una gran calificación, y estoy completamente de acuerdo. Es el mejor juego que he jugado sin ninguna duda, combina una buena trama con una buenísima experiencia de juego libre gracias a su inmenso mapa y actividades."
+                    )
+                }
             }
-            .frame(height: 300)
+            .frame(height: 400)
         }
-        .padding(.horizontal)
     }
 }
 
 struct Comment: View {
     var name: String
-    var img: String
+    var image: Image
     var date: String
     var text: String
     var body: some View {
+        
         VStack (alignment: .leading, spacing: 12){
             HStack (spacing: 10){
-                Image(img)
+                image
                     .resizable()
                     .frame(width: 45, height: 45)
                 
@@ -205,5 +182,5 @@ struct Comment: View {
 }
 
 #Preview {
-    GameView(game: Game(title: "Sonic", studio: "Sega", contentRaiting: "E+", publicationYear: "1991", description: "Mi juego", platforms: ["Xbox", "Play"], tags: ["Plataformas", "Aventura", "Acción"], videosUrls: VideoURL(mobile: "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4", tablet: "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4"), galleryImages: ["https://cdn.cloudflare.steamstatic.com/steam/apps/292030/ss_107600c1337accc09104f7a8aa7f275f23cad096.600x338.jpg", "https://cdn.cloudflare.steamstatic.com/steam/apps/292030/ss_107600c1337accc09104f7a8aa7f275f23cad096.600x338.jpg", "https://cn.cloudflare.steamstatic.com/steam/apps/292030/ss_107600c1337accc09104f7a8aa7f275f23cad096.600x338.jpg"]))
+    GameView(game: Game(title: "Sonic", studio: "Sega", contentRaiting: "E+", publicationYear: "1991", description: "Mi juego", platforms: ["Xbox", "Play"], tags: ["Plataformas", "Aventura", "Acción"], videosUrls: VideoURL(mobile: "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4", tablet: "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4"), galleryImages: ["https://cdn.cloudflare.steamstatic.com/steam/apps/292030/ss_107600c1337accc09104f7a8aa7f275f23cad096.600x338.jpg", "https://cdn.cloudflare.steamstatic.com/steam/apps/292030/ss_107600c1337accc09104f7a8aa7f275f23cad096.600x338.jpg", "https://cdn.cloudflare.steamstatic.com/steam/apps/292030/ss_107600c1337accc09104f7a8aa7f275f23cad096.600x338.jpg"]))
 }

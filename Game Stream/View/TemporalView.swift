@@ -9,7 +9,18 @@ import SwiftUI
 
 struct TemporalView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        MainLayout{
+            VStack {
+                HStack{
+                    Image(systemName: "hammer")
+                    Text("En Construcción...")
+                }
+                .font(.subheadline.bold())
+                Text("Vuelve pronto 😉")
+                    .font(.footnote)
+            }
+            .foregroundStyle(.white)
+        }
     }
 }
 

@@ -53,7 +53,11 @@ struct SearchModule: View{
     
     var body: some View {
         HStack{
-            Button(action: { searchGame(name: searchText) }) {
+            Button(action: {
+                if !searchText.isEmpty {
+                    searchGame(name: searchText)
+                }
+            }) {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(searchText.isEmpty ? .yellow : Color.appSecondaryBackground)
             }
@@ -113,7 +117,7 @@ struct PopularsModule: View {
                     posterURL: game.galleryImages[0]
                 )
                 .frame(maxHeight: 200)
-                .scaledToFit()
+                .scaledToFill()
                 
                 Text("The Witcher 3")
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -215,8 +219,10 @@ struct SubModule: View {
                                     .font(.subheadline.bold())
                                     .foregroundStyle(.white)
                                     .padding(8)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .frame(width: 240, alignment: .leading)
                                     .background(Color.appPrimaryButton)
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
                             }
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                         }

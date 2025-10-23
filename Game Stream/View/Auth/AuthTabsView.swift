@@ -17,7 +17,7 @@ struct AuthTabsView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 250)
-                .padding(.bottom, 40)
+                .padding(.bottom, 34)
                 .offset(x: 0, y: 4)
             
             HStack {
@@ -27,6 +27,7 @@ struct AuthTabsView: View {
                     isLogging = true
                 }
                 .foregroundStyle(isLogging ? .white : .gray)
+                .fontWeight(isLogging ? .bold : .regular)
                 
                 Spacer()
                 
@@ -34,11 +35,12 @@ struct AuthTabsView: View {
                     isLogging = false
                 }
                 .foregroundStyle(isLogging ? .gray : .white)
+                .fontWeight(isLogging ? .regular : .bold)
                 
                 Spacer()
             }
             
-            Spacer(minLength: 42)
+            Spacer(minLength: 35)
             
             if isLogging {
                 LoginView()

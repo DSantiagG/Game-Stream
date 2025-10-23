@@ -23,14 +23,14 @@ struct AppTabsView: View {
                     }
                     .tag(0)
                 
-                GamesView(games: gamesVM)
+                GamesView(gamesVM: gamesVM)
                     .tabItem {
                         Image(systemName: "gamecontroller")
                         Text("Juegos")
                     }
                     .tag(1)
                 
-                FavoritesView()
+                FavoritesView(gamesVM: gamesVM)
                     .tabItem {
                         Image(systemName: "heart")
                         Text("Favoritos")

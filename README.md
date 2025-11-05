@@ -1,4 +1,4 @@
-# 🎮 GameStream
+# 🎮 Game Stream
 
 GameStream is an iOS application built with **SwiftUI**, developed as a learning project inspired by a **Platzi course**, but later refactored, reorganized, and extended by **David Santiago Girón Muñoz**.  
 The app allows users to browse and view information about different video games, including images, videos, and detailed descriptions — all fetched from a public API.
@@ -36,8 +36,7 @@ It also includes a **local login and profile management system**, where users ca
 
 ## 🌐 API Reference
 
-Data is fetched from the [GameStream API](https://gamestreamapi.herokuapp.com/api-docs/#/default),  
-which provides information, images, and videos for various games through two endpoints.
+Data is fetched from the [GameStream API](https://gamestreamapi.herokuapp.com/api-docs/#/default), which provides information, images, and videos for various games through two endpoints.
 
 ---
 
@@ -53,8 +52,8 @@ The UI is inspired by this **Figma prototype:**
 ```plaintext
 GameStream/
 ├── Assets.xcassets/       # App icons, colors, and image assets
-├── Model/                 # Data models representing API entities
-├── Utils/                 # Helper functions and utility extensions
+├── Model/                 # Data models representing entities
+├── Utils/                 # Helper functions
 ├── View/                  # SwiftUI views that define the app's UI
 │   ├── Auth/              # Screens for login or authentication flow
 │   ├── Games/             # Game list and detail views
@@ -80,7 +79,6 @@ GameStream was created as a **personal learning project**, exploring:
 - Data persistence with UserDefaults.
 - Modular organization and reusable views.
 - Basic camera and photo handling in iOS.
-- Building modern app layouts inspired by Figma  
 
 ---
 

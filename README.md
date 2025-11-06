@@ -88,6 +88,6 @@ GameStream was created as a **personal learning project**, exploring:
 
 - 🐙 GitHub: [DSantiagG](https://github.com/DSantiagG)  
 - 🐦 X (Twitter): [@DSantiagG](https://x.com/DSantiagG)  
-- 💼 LinkedIn: [Santiago Girón Muñoz](https://www.linkedin.com/in/dsantiagg/)
+- 💼 LinkedIn: [David Giron](https://www.linkedin.com/in/dsantiagg/)
 
 
